@@ -38,6 +38,7 @@ func run() error {
 
 	logger.Info("initializing database")
 
+	//todo add auth from more variable
 	conn, err := sqlx.Open("pgx", cfg.DBUrl)
 	if err != nil {
 		logger.Panic("cant init db, err: ", zap.Error(err))
