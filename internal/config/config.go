@@ -8,12 +8,11 @@ import (
 )
 
 type Config struct {
-	ApiPort         string        `env:"API_PORT" env-default:"8080"`
-	DiagPort        string        `env:"DIAG_PORT" env-default:"8081"`
-	DBUrl           string        `env:"DB_URL" env-default:"postgres://user:password@localhost:5432/petstore?sslmode=disable"`
-	HTTPTimeout     time.Duration `env:"HTTP_TIMEOUT" env-default:"5s"`
-	IdleTimeout     time.Duration `env:"IDLE_TIMEOUT" env-default:"30s"`
-	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT" env-default:"30s"`
+	ApiPort         string        `env:"API_PORT"`
+	DiagPort        string        `env:"DIAG_PORT"`
+	HTTPTimeout     time.Duration `env:"HTTP_TIMEOUT"`
+	IdleTimeout     time.Duration `env:"IDLE_TIMEOUT"`
+	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT"`
 }
 
 func Load() (*Config, error) {
