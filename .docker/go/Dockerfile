@@ -1,29 +1,15 @@
-FROM golang:1.24.4 as Modules
+FROM golang:1.24.4 as build
 
-ADD go.mod go.sum /m/
+WORKDIR /go/src/app
+COPY . .
 
-RUN cd /m && go mod download
+RUN go mod download
 
-FROM golang:1.24.4 as Builder
+RUN CGO_ENABLED=0 go build -o /go/bin/app
 
-COPY --from=Modules /go/pkg /go/pkg
+FROM gcr.io/distroless/static-debian12
 
-RUN useradd -u 10001 go-rest
+COPY --from=build /go/bin/app /
 
-RUN mkdir -p /go-rest
-ADD . /go-rest
-WORKDIR /go-rest
-
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
-    go build -o ./bin/go-rest ./cmd/go-rest
-
-FROM scratch
-
-COPY --from=Builder /etc/passwd /etc/passwd
-USER go-rest
-
-COPY --from=Builder /go-rest/bin/go-rest /go-rest
-
-CMD ["/go-rest"]
-
+CMD ["/app"]
 
