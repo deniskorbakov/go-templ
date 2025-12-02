@@ -1,2 +1,2 @@
-# go-rest
+# go-templ
 Template for Golang

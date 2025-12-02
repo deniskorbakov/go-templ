@@ -1,4 +1,4 @@
-module go-rest
+module go-templ
 
 go 1.24.4
 
