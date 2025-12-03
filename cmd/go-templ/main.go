@@ -11,6 +11,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/lib/pq"
+
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"go-templ/internal/config"
@@ -36,8 +38,6 @@ func run() error {
 	if err != nil {
 		logger.Panic("cant init config", zap.Error(err))
 	}
-
-	logger.Info("conf: ", zap.Any("cfg", cfg))
 
 	logger.Info("initializing database")
 
