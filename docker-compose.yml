@@ -16,7 +16,7 @@ services:
       - SHUTDOWN_TIMEOUT=${SHUTDOWN_TIMEOUT}
     depends_on:
       - db
-      - flyway
+      - dbmate
     networks:
       - app
 
@@ -41,12 +41,14 @@ services:
       retries: 5
     restart: unless-stopped
 
-  flyway:
-    container_name: flyway.${APP_NAME}
-    image: boxfuse/flyway:latest
-    command: "-url=jdbc:postgresql://db:5432/${DB_DATABASE} -user=${DB_USERNAME} -password=${DB_PASSWORD} migrate"
+  dbmate:
+    container_name: dbmate.${APP_NAME}
+    image: amacneil/dbmate:2.28
+    entrypoint: ["dbmate", "up"]
+    environment:
+      - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_DATABASE}?sslmode=disable
     volumes:
-      - ./db/migration:/flyway/sql
+      - ./db:/db
     depends_on:
       - db
     networks:
