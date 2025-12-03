@@ -1,3 +1,4 @@
+-- migrate:up
 CREATE TABLE users
 (
     id         bigserial PRIMARY KEY,
@@ -6,3 +7,6 @@ CREATE TABLE users
     created_at timestamp,
     updated_at timestamp
 );
+
+-- migrate:down
+DROP TABLE IF EXISTS users
