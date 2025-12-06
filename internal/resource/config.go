@@ -11,7 +11,6 @@ type Config struct {
 	ApiPort         string        `envconfig:"API_PORT"`
 	DiagPort        string        `envconfig:"DIAG_PORT"`
 	DBUrl           string        `envconfig:"DB_URL"`
-	RedisAddress    string        `envconfig:"REDIS_ADDRESS"`
 	DbMaxConn       int           `envconfig:"DB_MAX_CONN"`
 	DbMaxIdle       int           `envconfig:"DB_MAX_IDLE"`
 	HTTPTimeout     time.Duration `envconfig:"HTTP_TIMEOUT"`

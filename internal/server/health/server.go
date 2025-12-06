@@ -4,10 +4,8 @@ import (
 	"context"
 	"net"
 	"net/http"
-	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/redis/go-redis/v9"
 	"go-templ/internal/resource"
 	"go.uber.org/zap"
 )
@@ -15,14 +13,13 @@ import (
 type Server struct {
 	server   http.Server
 	postgres *sqlx.DB
-	redis    *redis.Client
-	errors   chan error
 	logger   *zap.Logger
+	errors   chan error
 }
 
-func NewServer(cfg *resource.Config, log *zap.Logger, pg *sqlx.DB, rd *redis.Client) *Server {
+func NewServer(cfg *resource.Config, log *zap.Logger, pg *sqlx.DB) *Server {
 	http.HandleFunc("/health", healthHandler)
-	http.HandleFunc("/ready", readyHandler(log, pg, rd))
+	http.HandleFunc("/ready", readyHandler(log, pg))
 
 	return &Server{
 		server: http.Server{
@@ -30,7 +27,6 @@ func NewServer(cfg *resource.Config, log *zap.Logger, pg *sqlx.DB, rd *redis.Cli
 			Handler: nil,
 		},
 		postgres: pg,
-		redis:    rd,
 		errors:   make(chan error, 1),
 		logger:   log,
 	}
@@ -55,17 +51,10 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func readyHandler(logger *zap.Logger, pg *sqlx.DB, rd *redis.Client) func(http.ResponseWriter, *http.Request) {
+func readyHandler(logger *zap.Logger, pg *sqlx.DB) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
-		defer cancel()
-
 		if err := pg.Ping(); err != nil {
 			logger.Error("cant pinging postgres", zap.Error(err))
-		}
-
-		if err := rd.Ping(ctx).Err(); err != nil {
-			logger.Error("cant pinging redis", zap.Error(err))
 		}
 
 		w.WriteHeader(http.StatusOK)
