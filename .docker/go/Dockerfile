@@ -4,7 +4,7 @@ WORKDIR /go/src/app
 
 COPY . .
 
-RUN go mod download && CGO_ENABLED=0 go build -o /go/bin/app ./cmd/go-templ
+RUN go mod download && CGO_ENABLED=0 go build -o /go/bin/app ./cmd/grpc
 
 FROM gcr.io/distroless/static-debian12:nonroot
 
